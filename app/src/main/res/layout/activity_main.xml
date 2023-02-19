@@ -13,6 +13,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Hello World!"/>
+    <App.kotlinv4.Engine.Screen
+        android:id="@+id/screen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </App.kotlinv4.Engine.Screen>
 
 
 </LinearLayout>
