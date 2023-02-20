@@ -4,10 +4,12 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.util.AttributeSet
 import android.util.Log
 import android.view.SurfaceView
 
-class Screen(context: Context):SurfaceView(context),Runnable {
+class Screen @JvmOverloads constructor(context: Context,attributeSet: AttributeSet,defStyleAttr:Int=0):
+    SurfaceView(context,attributeSet,defStyleAttr),Runnable {
     private val tag = "MyActivity"
     private var isRunning = true
 
