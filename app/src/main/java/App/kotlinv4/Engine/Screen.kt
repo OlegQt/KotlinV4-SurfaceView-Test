@@ -21,12 +21,20 @@ class Screen @JvmOverloads constructor(context: Context,attributeSet: AttributeS
 
     private fun render(canvas: Canvas){
         var paint:Paint = Paint()
-        canvas.drawColor(Color.WHITE);
+        canvas.drawColor(Color.GRAY);
 
         paint.color = Color.BLACK
         paint.textSize = 30.0f
         canvas.drawRect(100.0f,100.0f,200.0f,200.0f,paint)
         canvas.drawText("Success",250.0f,150.0f,paint)
+    }
+
+    fun pause(){
+
+    }
+
+    fun resume(){
+
     }
 
 
