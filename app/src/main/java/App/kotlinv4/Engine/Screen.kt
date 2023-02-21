@@ -36,7 +36,9 @@ class Screen @JvmOverloads constructor(
         try {
             // Stop the thread (rejoin the main thread)
             thread?.join()
-        } catch (e: InterruptedException) {
+            Log.w(tag,"thread stopped")
+        } catch (error: InterruptedException) {
+            Log.i(tag,error.toString())
         }
     }
 
@@ -45,6 +47,7 @@ class Screen @JvmOverloads constructor(
 
         thread = Thread(this)
         thread?.start()
+        Log.i(tag,"thread resumed")
     }
 
     fun setLogic(logic: Clogic) {
