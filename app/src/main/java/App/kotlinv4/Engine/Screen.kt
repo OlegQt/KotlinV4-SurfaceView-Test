@@ -7,7 +7,6 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.util.Log
 import android.view.SurfaceView
-import kotlin.concurrent.thread
 
 class Screen @JvmOverloads constructor(
     context: Context, attributeSet: AttributeSet, defStyleAttr: Int = 0
@@ -22,13 +21,13 @@ class Screen @JvmOverloads constructor(
     }
 
     private fun render(canvas: Canvas) {
-        var paint: Paint = Paint()
+        val paint: Paint = Paint()
         canvas.drawColor(Color.GRAY);
 
         paint.color = Color.BLACK
         paint.textSize = 30.0f
         canvas.drawRect(100.0f, 100.0f, 200.0f, 200.0f, paint)
-        canvas.drawText(this.engine.toString(), 250.0f, 150.0f, paint)
+        canvas.drawText(engine?.toString() ?: "No engine found", 250.0f, 150.0f, paint)
     }
 
     fun pause() {
@@ -36,18 +35,20 @@ class Screen @JvmOverloads constructor(
         try {
             // Stop the thread (rejoin the main thread)
             thread?.join()
-            Log.w(tag,"thread stopped")
+            Log.w(tag, thread?.name ?: "No thread found") // Logging
         } catch (error: InterruptedException) {
-            Log.i(tag,error.toString())
+            Log.e(tag, error.toString()) // Logging
         }
     }
 
     fun resume() {
         isRunning = true
 
-        thread = Thread(this)
+        thread = Thread(this, "Render Thread")
         thread?.start()
-        Log.i(tag,"thread resumed")
+
+        // Logging
+        Log.i(tag, thread?.name ?: "Error starting thread")
     }
 
     fun setLogic(logic: Clogic) {
