@@ -6,14 +6,14 @@ class ParticleSystem {
     val pSys: MutableList<CParticle> = ArrayList()
     //private val book:MutableList<Int> = mutableListOf(10)
     init {
-//        book.add(2,2)
-//        book.add(1,1)
         Log.i("MyActivity","Particle Sys init")
     }
 
     fun addRandomParticle() {
         //val particle:CParticle = CParticle()
-        pSys.add(CParticle())
+        for (i in 0 until 100){
+            pSys.add(CParticle())
+        }
     }
 
     fun updateAllParticles(time: Long) {

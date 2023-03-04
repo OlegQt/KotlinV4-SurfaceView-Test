@@ -1,10 +1,7 @@
 package App.kotlinv4.Engine
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.RectF
+import android.graphics.*
 import android.util.AttributeSet
 import android.util.Log
 import android.view.SurfaceView
@@ -41,26 +38,24 @@ class Screen @JvmOverloads constructor(
     }
 
     private fun render() {
-        canvas.drawColor(Color.GRAY)
-
+        //canvas.drawColor(Color.GRAY)
+        renderBounds()
         renderParticle()
         printDebuggingText()
-        renderBounds()
     }
 
     private fun renderBounds() {
-        val bouns = RectF(0.0f, 0.0f, 1000.0f, 1000.0f)
+        val bounds = RectF(0.0f, 0.0f, canvas.width.toFloat(), canvas.height.toFloat())
 
-        paint.style = Paint.Style.STROKE
-        paint.color = Color.BLACK
-        paint.strokeWidth = 4.0f
-        canvas.drawRect(bouns, paint)
+        paint.style = Paint.Style.FILL
+        paint.color = Color.rgb(255, 159, 128)
+        canvas.drawRect(bounds, paint)
 
         // Draw the buttons
-        paint.style = Paint.Style.FILL
-        paint.color = Color.DKGRAY
-        paint.strokeWidth = 1.0f
-        canvas.drawRect(btn, paint)
+        //paint.style = Paint.Style.FILL
+        //paint.color = Color.DKGRAY
+        //paint.strokeWidth = 1.0f
+        //canvas.drawRect(btn, paint)
     }
 
     private fun renderParticle() {
@@ -69,7 +64,9 @@ class Screen @JvmOverloads constructor(
         paint.strokeWidth = 8.0f
         //canvas.drawPoint(engine.particle.position.x,engine.particle.position.y,paint)
         engine.sys.pSys.forEach { particle ->
-            canvas.drawPoint(particle.position.x, particle.position.y, paint)
+            val point = tpts(particle.position.x,particle.position.y,0.0f)
+
+            canvas.drawPoint(point.x, point.y, paint)
         }
     }
 
@@ -81,6 +78,13 @@ class Screen @JvmOverloads constructor(
 
         canvas.drawText("FPS $fps", 10.0f, 30.0f, paint)
         canvas.drawText("N ${engine.sys.pSys.size}", 10.0f, 55.0f, paint)
+    }
+
+    fun tpts(x:Float,y:Float,z:Float): PointF {
+        val point:PointF = PointF()
+        point.x = x*this.width
+        point.y = this.height-y*height
+        return point
     }
 
     fun pause() {

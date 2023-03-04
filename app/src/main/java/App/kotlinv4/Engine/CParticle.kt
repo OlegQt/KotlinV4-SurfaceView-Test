@@ -14,17 +14,14 @@ class CParticle(private val direction: PointF) {
     var toDelete = false
 
     init {
-        position.x = Random.nextInt(1000).toFloat()
-        position.y = 0.0f
-        //velocity.x = direction.x
-        //velocity.y = direction.y
+        position.x = Random.nextFloat()
+        position.y = Random.nextFloat()
     }
 
     fun update(time: Long) {
         // Move the particle
-        velocity.y += (gi * time / 1000)
+        velocity.y += (gi/10000 * time / 1000)
 
-        //position.x += velocity.x
         position.y += velocity.y
         checkBounds(time)
     }
