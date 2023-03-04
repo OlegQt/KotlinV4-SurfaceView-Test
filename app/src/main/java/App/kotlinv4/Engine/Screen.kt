@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.RectF
 import android.util.AttributeSet
 import android.util.Log
 import android.view.SurfaceView
@@ -14,10 +15,11 @@ class Screen @JvmOverloads constructor(
     private val tag = "MyActivity"
     private var isRunning = true
     private var paused = false
-    private var thread: Thread? = null
-    private var engine: Clogic? = null
+    private var thread: Thread? = null // Поток
+    private var engine: CEngine = CEngine() // Класс движка игры
     private var canvas: Canvas = Canvas()
     private var paint: Paint = Paint()
+    private var btn: RectF = RectF()
 
     // How many frames per second did we get?
     private var fps: Long = 0
@@ -26,29 +28,59 @@ class Screen @JvmOverloads constructor(
     private val millisInSecond: Long = 1000
 
     init {
-        Log.i(tag, "Init выполнен")
+        btn = RectF(10f, 80f, 100f, 150f)
+        Log.i(tag, "Screen: Init выполнен")
     }
 
-    private fun draw(){
+    private fun draw() {
         if (holder.surface.isValid) {
             canvas = holder.lockCanvas()
             render()
-            holder.unlockCanvasAndPost(canvas);
+            holder.unlockCanvasAndPost(canvas)
         }
     }
 
     private fun render() {
-        canvas.drawColor(Color.GRAY);
+        canvas.drawColor(Color.GRAY)
 
-        paint.color = Color.BLACK
-        paint.textSize = 30.0f
-        canvas.drawRect(100.0f, 100.0f, 200.0f, 200.0f, paint)
-        canvas.drawText(engine?.toString() ?: "No engine found", 250.0f, 150.0f, paint)
+        renderParticle()
         printDebuggingText()
+        renderBounds()
+    }
+
+    private fun renderBounds() {
+        val bouns = RectF(0.0f, 0.0f, 1000.0f, 1000.0f)
+
+        paint.style = Paint.Style.STROKE
+        paint.color = Color.BLACK
+        paint.strokeWidth = 4.0f
+        canvas.drawRect(bouns, paint)
+
+        // Draw the buttons
+        paint.style = Paint.Style.FILL
+        paint.color = Color.DKGRAY
+        paint.strokeWidth = 1.0f
+        canvas.drawRect(btn, paint)
+    }
+
+    private fun renderParticle() {
+        paint.color = Color.BLACK
+        paint.style = Paint.Style.FILL
+        paint.strokeWidth = 8.0f
+        //canvas.drawPoint(engine.particle.position.x,engine.particle.position.y,paint)
+        engine.sys.pSys.forEach { particle ->
+            canvas.drawPoint(particle.position.x, particle.position.y, paint)
+        }
     }
 
     private fun printDebuggingText() {
+        paint.style = Paint.Style.FILL
+        paint.color = Color.BLACK
+        paint.strokeWidth = 1.0f
+        paint.textSize = 30.0f
+
         canvas.drawText("FPS $fps", 10.0f, 30.0f, paint)
+        canvas.drawText("N ${engine.sys.pSys.size}", 10.0f, 55.0f, paint)
     }
 
     fun pause() {
@@ -74,7 +106,7 @@ class Screen @JvmOverloads constructor(
         Log.i(tag, thread?.name ?: "Error starting thread")
     }
 
-    fun setLogic(logic: Clogic) {
+    fun setLogic(logic: CEngine) {
         this.engine = logic
     }
 
@@ -87,18 +119,19 @@ class Screen @JvmOverloads constructor(
         // will stop the thread
         while (isRunning) {
             val frameStartTime = System.currentTimeMillis()
-            if(!paused){
-                update()
-
-            }
             draw()
+            // if (!paused) update(frameTime) //Эта функция была здесь
+
             // Store the fps in millis
             val frameTime = System.currentTimeMillis() - frameStartTime
-            if (frameTime > 0) fps = this.millisInSecond / frameTime
+            if (frameTime > 0) {
+                fps = this.millisInSecond / frameTime
+                if (!paused) update(frameTime)
+            }
         }
     }
 
-    private fun update(){
-
+    private fun update(frameTime: Long) {
+        engine.update(frameTime)
     }
 }
