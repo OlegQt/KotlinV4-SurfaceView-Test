@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 class MainActivity : AppCompatActivity() {
     private var txt: TextView? = null
     private var btn: Button? = null
+    private var btnQuit:Button?=null
     private var screen: Screen? = null
     private var engine: CEngine = CEngine()
 
@@ -21,11 +22,15 @@ class MainActivity : AppCompatActivity() {
         screen = findViewById(R.id.screen)
         txt = findViewById(R.id.txtInfo)
         btn = findViewById(R.id.btnAction)
+        btnQuit = findViewById(R.id.exit)
 
         screen?.setLogic(engine)
 
         btn?.setOnClickListener {
             this.engine.click()
+        }
+        btnQuit?.setOnClickListener{
+            finish()
         }
 
     }
