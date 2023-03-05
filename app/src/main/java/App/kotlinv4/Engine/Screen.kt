@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.RectF
 import android.util.AttributeSet
 import android.util.Log
 import android.view.SurfaceView
@@ -15,7 +16,7 @@ class Screen @JvmOverloads constructor(
     private var isRunning = true
     private var paused = false
     private var thread: Thread? = null
-    private var engine: Clogic? = null
+    private var engine: Engine = Engine()
     private var canvas: Canvas = Canvas()
     private var paint: Paint = Paint()
 
@@ -32,23 +33,32 @@ class Screen @JvmOverloads constructor(
     private fun draw(){
         if (holder.surface.isValid) {
             canvas = holder.lockCanvas()
-            render()
+            renderBackground()
+            renderDebuggingText()
             holder.unlockCanvasAndPost(canvas);
         }
     }
 
-    private fun render() {
-        canvas.drawColor(Color.GRAY);
+    private fun renderBackground() {
+        val rect = RectF(0.0f,0.0f,canvas.width.toFloat(),canvas.height.toFloat())
 
-        paint.color = Color.BLACK
-        paint.textSize = 30.0f
-        canvas.drawRect(100.0f, 100.0f, 200.0f, 200.0f, paint)
-        canvas.drawText(engine?.toString() ?: "No engine found", 250.0f, 150.0f, paint)
-        printDebuggingText()
+        paint.color = Color.LTGRAY
+        paint.style = Paint.Style.FILL
+        paint.strokeWidth = 8.0f
+        canvas.drawRect(rect,paint)
+
+        paint.color = Color.rgb(255,69,0)
+        paint.style = Paint.Style.STROKE
+        paint.strokeWidth = 12.0f
+        canvas.drawRect(rect,paint)
     }
 
-    private fun printDebuggingText() {
-        canvas.drawText("FPS $fps", 10.0f, 30.0f, paint)
+    private fun renderDebuggingText() {
+        paint.color = Color.BLACK
+        paint.style = Paint.Style.FILL
+        paint.strokeWidth = 1.0f
+        paint.textSize = 30.0f
+        canvas.drawText("${engine.toString()}    FPS $fps", 10.0f, 30.0f, paint)
     }
 
     fun pause() {
@@ -72,10 +82,6 @@ class Screen @JvmOverloads constructor(
 
         // Logging
         Log.i(tag, thread?.name ?: "Error starting thread")
-    }
-
-    fun setLogic(logic: Clogic) {
-        this.engine = logic
     }
 
     override fun run() {

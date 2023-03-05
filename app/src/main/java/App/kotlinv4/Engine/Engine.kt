@@ -1,10 +1,8 @@
 package App.kotlinv4.Engine
 
-class Clogic {
-    var count:Int = 0;
-
+class Engine {
 
     override fun toString(): String {
-        return count.toString()
+        return "Engine"
     }
 }
