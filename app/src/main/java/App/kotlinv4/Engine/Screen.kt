@@ -30,27 +30,28 @@ class Screen @JvmOverloads constructor(
         Log.i(tag, "Init выполнен")
     }
 
-    private fun draw(){
+    private fun draw() {
         if (holder.surface.isValid) {
             canvas = holder.lockCanvas()
             renderBackground()
             renderDebuggingText()
+            renderPoints()
             holder.unlockCanvasAndPost(canvas);
         }
     }
 
     private fun renderBackground() {
-        val rect = RectF(0.0f,0.0f,canvas.width.toFloat(),canvas.height.toFloat())
+        val rect = RectF(0.0f, 0.0f, canvas.width.toFloat(), canvas.height.toFloat())
 
         paint.color = Color.LTGRAY
         paint.style = Paint.Style.FILL
         paint.strokeWidth = 8.0f
-        canvas.drawRect(rect,paint)
+        canvas.drawRect(rect, paint)
 
-        paint.color = Color.rgb(255,69,0)
+        paint.color = Color.rgb(255, 69, 0)
         paint.style = Paint.Style.STROKE
         paint.strokeWidth = 12.0f
-        canvas.drawRect(rect,paint)
+        canvas.drawRect(rect, paint)
     }
 
     private fun renderDebuggingText() {
@@ -59,6 +60,16 @@ class Screen @JvmOverloads constructor(
         paint.strokeWidth = 1.0f
         paint.textSize = 30.0f
         canvas.drawText("${engine.toString()}    FPS $fps", 10.0f, 30.0f, paint)
+    }
+
+    private fun renderPoints() {
+        paint.color = Color.BLACK
+        paint.style = Paint.Style.FILL
+        paint.strokeWidth = 20.0f
+        val p = engine.p.get2dPoint(1.0f,
+            canvas.width.toFloat()/2,
+            canvas.height.toFloat()/2)
+        canvas.drawPoint(p.x,p.y, paint)
     }
 
     fun pause() {
@@ -93,7 +104,7 @@ class Screen @JvmOverloads constructor(
         // will stop the thread
         while (isRunning) {
             val frameStartTime = System.currentTimeMillis()
-            if(!paused){
+            if (!paused) {
                 update()
 
             }
@@ -104,7 +115,7 @@ class Screen @JvmOverloads constructor(
         }
     }
 
-    private fun update(){
+    private fun update() {
 
     }
 }
